@@ -1,4 +1,3 @@
-from ast import If
 import torchvision.ops as ops
 from torch import nn
 import torch
@@ -44,11 +43,10 @@ class DenseDeformableModule(nn.Module):
 
 
 class SpaceToDepthModule(nn.Module):
-    def __init__(self, block_size=None):
+    def __init__(self, scale_factor=2):
         super(SpaceToDepthModule, self).__init__()
-        self.block_size = block_size
+        self.shuff = nn.PixelUnshuffle(2)
 
-    # Inspired by https://stackoverflow.com/questions/58857720/is-there-an-equivalent-pytorch-function-for-tf-nn-space-to-depth
     def forward(self, x):
         sz = x.size()
         if len(sz) == 3:
@@ -61,12 +59,7 @@ class SpaceToDepthModule(nn.Module):
             raise ValueError(f"Input tensor number of dimensions is not correct\n \
                               expected: 4 \n \
                               given: {sz}")
-
-        batch_sz, n_channels, height, width = sz
-        return x.view(batch_sz,
-                      n_channels * self.block_size ** 2,
-                      height // self.block_size,
-                      width // self.block_size)
+        return self.shuff(x)
 
 
 class RegionAdaptiveNetwork(nn.Module):
@@ -75,12 +68,9 @@ class RegionAdaptiveNetwork(nn.Module):
 
 
 if __name__ == "__main__":
+    val = 8
     a = torch.tensor([[[
-                        [1, 2, 3, 4],
-                        [5, 6, 7, 8],
-                        [9, 10, 11, 12],
-                        [13, 14, 15, 16],
+                        [i for i in range(((j // val) * val) + 1, j + val)]
+                        for j in range(1, val*val + 1, val)
                     ]]]).float()
-    sptd = SpaceToDepthModule(block_size=2)
-    print(a.size())
-    print(sptd(a).size())
+    print(a)

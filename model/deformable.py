@@ -28,6 +28,8 @@ class DenseDeformableModule(nn.Module):
                                        padding=self.padding,
                                        stride=stride,
                                        bias=bias)
+
+    def _initialize_model(self):
         # initialize weights to a uniform distribution
         nn.init.xavier_uniform(self.offset_convolution)
         nn.init.xavier_uniform(self.standard_conv)
@@ -40,3 +42,4 @@ class DenseDeformableModule(nn.Module):
                               weight=self.standard_conv.weight,
                               bias=self.standard_conv.bias,
                               padding=self.padding)
+        return x

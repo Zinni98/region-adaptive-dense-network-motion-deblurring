@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 
@@ -19,3 +20,9 @@ class SpaceToDepthModule(nn.Module):
                               expected: 4 \n \
                               given: {sz}")
         return self.shuff(x)
+
+
+if __name__ == "__main__":
+    x = torch.randn((2, 3, 32, 32))
+    net = SpaceToDepthModule()
+    print(net(x).shape)

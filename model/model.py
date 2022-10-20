@@ -3,6 +3,7 @@ import torch
 from torchvision.models import DenseNet121_Weights
 from space_to_depth import SpaceToDepthModule
 from self_attention import SelfAttention
+from deformable import DenseDeformableModule
 
 
 class RegionAdaptiveNetwork(nn.Module):
@@ -38,6 +39,9 @@ class RegionAdaptiveNetwork(nn.Module):
         self.denseblock3 = layers_densenet["denseblock4"]
 
         self.attention = SelfAttention(1024)
+
+        self.deformable1 = DenseDeformableModule(1024)
+        # self.DDM1 = DDM(6, 32, 1123, 0.5)
 
 
 if __name__ == "__main__":
